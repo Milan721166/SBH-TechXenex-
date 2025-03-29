@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #27ae60;
+        }
+        .error {
+            color: #ff6b6b;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Batch Login</h2>
+        <form id="batchLoginForm" action="{{ url_for('batch_login') }}" method="post">
+            <label for="batch">Select Batch:</label>
+            <select id="batch" name="batch" required>
+                <option value="">Select Batch</option>
+                <option value="DCSE_2023">Batch 1</option>
+                <option value="DCSE_2022">Batch 2</option>
+                <option value="DCSE_2021">Batch 3</option>
+            </select>
+            <button type="submit">View Routine</button>
+            <div id="error" class="error"></div>
+        </form>
+    </div>
+
+    <script>
+        // JavaScript for form validation
+        document.getElementById('batchLoginForm').addEventListener('submit', function (event) {
+            const batch = document.getElementById('batch').value;
+            const errorElement = document.getElementById('error');
+
+            // Reset error message
+            errorElement.textContent = '';
+
+            // Validate batch selection
+            if (batch === '') {
+                errorElement.textContent = 'Please select a batch.';
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+    </script>
+</body>
+</html>

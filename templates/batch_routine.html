@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Routine - {{ batch_name }}</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .routine-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 500;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        /* Routine Table */
+        .routine-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .routine-table th,
+        .routine-table td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .routine-table th {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .routine-table tr:hover {
+            background-color: #e9f5ff;
+            transition: background-color 0.3s ease;
+        }
+
+        /* No Routine Message */
+        .no-routine {
+            text-align: center;
+            color: #777;
+            font-style: italic;
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        /* Back Button */
+        .btn-back {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-back:hover {
+            background: linear-gradient(135deg, #0056b3, #003d80);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .routine-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .routine-table th,
+            .routine-table td {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .btn-back {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="routine-container">
+        <h1>Routine for {{ batch_name }}</h1>
+
+        {% if routine %}
+            <h2>Routine Details</h2>
+            <table class="routine-table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Batch Name</th>
+                        <th>Subject</th>
+                        <th>Facility</th>
+                        <th>Room Number</th>
+                        <th>Time Slot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in routine %}
+                        <tr>
+                            <td>{{ entry.day }}</td>
+                            <td>{{ entry.batch_name }}</td>
+                            <td>{{ entry.subject }}</td>
+                            <td>{{ entry.facility_name}}</td>
+                            <td>{{ entry.room_number }}</td>
+                            <td>{{ entry.time_slot }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-routine">No routine found for {{ batch_name }}.</p>
+        {% endif %}
+
+        <a href="{{ url_for('home') }}" class="btn-back">Back to Home</a>
+    </div>
+</body>
+</html>

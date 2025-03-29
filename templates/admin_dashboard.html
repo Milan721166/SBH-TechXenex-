@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    thead {
+        background-color: #007BFF;
+        color: white;
+        text-align: left;
+    }
+    
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    tbody tr:hover {
+        background-color: #f1f1f1;
+        transition: 0.3s;
+    }
+    
+    th {
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+    
+    td {
+        font-size: 16px;
+    }
+    
+    @media (max-width: 768px) {
+        table {
+            font-size: 14px;
+        }
+    
+        th, td {
+            padding: 10px;
+        }
+    }
+    </style>
+</head>
+<body class="container mt-4">
+
+    <!-- Display Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h1 class="text-center">Admin Dashboard</h1>
+    <p>You are logged in as <strong>{{ session['admin_username'] }}</strong>.</p>
+    <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+
+    <!-- Add New Skill Form -->
+    <h2 class="mt-4">Add New Skill</h2>
+    <form action="{{ url_for('add_skill') }}" method="post" class="mb-3">
+        <div class="mb-3">
+            <label for="skill_name" class="form-label">Skill Name</label>
+            <input type="text" name="skill_name" placeholder="Enter Skill Name" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-info">Add Skill</button>
+    </form>
+
+    <!-- Add Facility Form -->
+    <h2 class="mt-4">Add Facility</h2>
+    <form action="{{ url_for('add_facility') }}" method="post" class="mb-3">
+        <div class="mb-3">
+            <label for="facility_name" class="form-label">Facility Name</label>
+            <input type="text" name="facility_name" placeholder="Enter Facility Name" required class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" name="password" placeholder="Enter Password" required class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="facility_skills" class="form-label">Select Skills</label>
+            <select name="facility_skills" id="facility_skills" class="form-select" multiple>
+                {% for skill in skills %}
+                <option value="{{ skill.id }}">{{ skill.skill_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Facility</button>
+    </form>
+
+    <!-- Facility Management -->
+    <h2 class="mt-4">Manage Facilities</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Facility Name</th>
+                <th>Skills</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for facility in facilities %}
+            <tr>
+                <td>{{ facility.id }}</td>
+                <td>{{ facility.facility_name }}</td>
+                <td>
+                    {% for skill in facility.skills %}
+                    <span class="badge bg-secondary">{{ skill }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    <form action="{{ url_for('delete_facility', facility_id=facility.id) }}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Batch Management -->
+    <h2 class="mt-4">Manage Batches</h2>
+    <form action="{{ url_for('add_batch') }}" method="post" class="mb-3">
+        <div class="mb-3">
+            <label for="batch_name" class="form-label">Batch Name</label>
+            <input type="text" name="batch_name" placeholder="Enter Batch Name" required class="form-control mb-2">
+        </div>
+        <div class="mb-3">
+            <label for="batch_subjects" class="form-label">Select Subjects (from Facility Skills)</label>
+            <select name="batch_subjects" id="batch_subjects" class="form-select" multiple>
+                {% for skill in skills %}
+                <option value="{{ skill.id }}">{{ skill.skill_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Add Batch</button>
+    </form>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Batch Name</th>
+                <th>Subjects</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for batch in batches %}
+            <tr>
+                <td>{{ batch.id }}</td>
+                <td>{{ batch.batch_name }}</td>
+                <td>
+                    {% for subject in batch.subjects %}
+                    <span class="badge bg-secondary">{{ subject }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    <form action="{{ url_for('delete_batch', batch_id=batch.id) }}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('view_routine') }}" class="btn btn-primary">View Approved Routine</a>
+    {% if routine %}
+    <table>
+        <thead>
+            <tr>
+                <th>Batch Name</th>
+                <th>Subject</th>
+                <th>Facility</th>
+                <th>Room Number</th>
+                <th>Time Slot</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in routine %}
+            <tr>
+                <td>{{ entry.batch_name }}</td>
+                <td>{{ entry.subject }}</td>
+                <td>{{ entry.facility_name }}</td>
+                <td>{{ entry.room_number }}</td>
+                <td>{{ entry.time_slot }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <form action="{{ url_for('approve_routine') }}" method="POST">
+        <button type="submit" class="btn btn-success">Approve Routine</button>
+    </form>
+{% else %}
+    <p>No routine generated yet.</p>
+{% endif %}
+</body>
+</html>

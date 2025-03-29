@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin_login.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Light Mode (Default) */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    margin: 0;
+    transition: background 0.5s ease-in-out;
+}
+
+/* Dark Mode */
+body.dark-mode {
+    background: linear-gradient(135deg, #2c3e50, #4a5568);
+}
+
+/* Toggle Button */
+.toggle-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.toggle-btn {
+    background: #ff7eb3;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background: #ff4f7b;
+}
+
+/* Login Container */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Login Box */
+.login-box {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: fadeIn 0.8s ease-in-out;
+    transition: background 0.5s ease-in-out;
+}
+
+/* Dark Mode Login Box */
+body.dark-mode .login-box {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header */
+.login-header h2 {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.login-header p {
+    font-size: 14px;
+    color: #eee;
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+    position: relative;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #fff;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    outline: none;
+    transition: 0.3s ease;
+}
+
+/* Dark Mode Inputs */
+body.dark-mode .form-group input {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+.form-group input:focus {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+/* Login Button */
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background: #ff7eb3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-login:hover {
+    background: #ff4f7b;
+    box-shadow: 0 4px 10px rgba(255, 79, 123, 0.5);
+}
+
+/* Footer */
+.login-footer {
+    margin-top: 15px;
+}
+
+.login-footer p {
+    font-size: 14px;
+    color: #fff;
+}
+
+.login-footer a {
+    color: #ff7eb3;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Light/Dark Mode Toggle Button -->
+    <div class="toggle-container">
+        <button id="toggleMode" class="toggle-btn">🌙 Dark Mode</button>
+    </div>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h2>Admin Login</h2>
+                <p>Welcome back! Please log in to access the admin panel.</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> Username</label>
+                    <input type="text" name="username" id="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" name="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn-login">Login</button>
+            </form>
+            <div class="login-footer">
+                <p>Forgot your password? <a href="#">Reset here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(loginForm);
+
+            try {
+                const response = await fetch('/admin/login', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Login successful!');
+                    window.location.href = '/admin/admin_dashboard';  // Redirect to dashboard
+                } else {
+                    alert('Login failed: ' + result.message);
+                }
+            } catch (err) {
+                console.error('Error during login:', err);
+                alert('An error occurred. Please try again.');
+            }
+        });
+        const toggleButton = document.getElementById('toggleMode');
+        toggleButton.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                toggleButton.innerText = '☀️ Light Mode';
+            } else {
+                toggleButton.innerText = '🌙 Dark Mode';
+            }
+        });
+    </script>

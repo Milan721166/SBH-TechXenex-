@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Batch Routine - {{ batch_name }}{% endblock %}
+
+{% block content %}
+    <div class="routine-container">
+        <h1>Routine for {{ batch_name }}</h1>
+        {% if routine %}
+            <table class="routine-table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Classes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] %}
+                    {% for day in days %}
+                        <tr>
+                            <td>{{ day }}</td>
+                            <td>
+                                <table class="day-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Facility</th>
+                                            <th>Room</th>
+                                            <th>Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for entry in routine %}
+                                            {% if entry.day == day %}
+                                                <tr>
+                                                    <td>{{ entry.subject }}</td>
+                                                    <td>{{ entry.facility_name }}</td>
+                                                    <td>{{ entry.room_number }}</td>
+                                                    <td>{{ entry.time_slot }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-routine">No routine found for {{ batch_name }}.</p>
+        {% endif %}
+        <a href="{{ url_for('home') }}" class="btn-back">Back to Home</a>
+    </div>
+{% endblock %}

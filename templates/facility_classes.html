@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility Classes</title>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007BFF;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .no-classes {
+            text-align: center;
+            color: #888;
+        }
+
+        .toggle-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .toggle-button:hover {
+            background-color: #0056b3;
+        }
+
+        .marquee {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #333;
+            color: #f4f4f4;
+        }
+
+        body.dark-mode table {
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode th {
+            background-color: #0056b3;
+        }
+
+        body.dark-mode tr:hover {
+            background-color: #444;
+        }
+
+        body.dark-mode .no-classes {
+            color: #aaa;
+        }
+
+        body.dark-mode .marquee {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Marquee Tag -->
+    <div class="marquee">
+        <marquee behavior="scroll" direction="left">
+            Welcome to {{ facility_name }}'s Class Schedule!
+        </marquee>
+    </div>
+
+    <!-- Light/Dark Mode Toggle Button -->
+    <button class="toggle-button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+    <h1>Classes for {{ facility_name }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Batch Name</th>
+                <th>Subject</th>
+                <th>Room Number</th>
+                <th>Time Slot</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for class in classes %}
+                <tr>
+                    <td>{{ class.day }}</td>
+                    <td>{{ class.batch_name }}</td>
+                    <td>{{ class.subject }}</td>
+                    <td>{{ class.room_number }}</td>
+                    <td>{{ class.time_slot }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="no-classes">No classes found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="{{ url_for('logout') }}">Logout</a>
+
+    <script>
+        // Dark Mode Toggle Function
+        function toggleDarkMode() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+
+            // Save the user's preference in localStorage
+            const isDarkMode = body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        // Check for saved user preference on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>
